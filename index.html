@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>captainandrej | Full Stack Portfolio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- AOS Animations (CSS) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandBg: '#050507',
+                        brandCard: '#0f0f15',
+                        brandCardHover: '#161622',
+                        brandBorder: '#1f1f2e',
+                        brandNeon: '#38bdf8',
+                        brandPurple: '#a855f7',
+                        telegramBlue: '#229ED9', // Telegram signature blue
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .tech-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+        }
+        
+        .radial-glow {
+            background: radial-gradient(circle 800px at 50% 300px, rgba(56, 189, 248, 0.06), transparent);
+        }
+
+        .neon-card-hover:hover {
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+
+        /* Gradient outlines for tech icons */
+        .tech-icon-card {
+            position: relative;
+            background: #0f0f15;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .tech-icon-card::before {
+            content: '';
+            position: absolute;
+            inset: -1.5px;
+            border-radius: 0.85rem;
+            background: linear-gradient(135deg, #38bdf8 0%, #a855f7 100%);
+            z-index: -1;
+            opacity: 0.4;
+            transition: opacity 0.3s ease;
+        }
+        .tech-icon-card:hover::before {
+            opacity: 1;
+        }
+        .tech-icon-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.1);
+        }
+
+        /* Fixed canvas for background effects */
+        #effect-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="bg-brandBg text-gray-300 min-h-screen font-sans antialiased overflow-x-hidden tech-grid relative">
+
+    <!-- Canvas for Code Snow and Cursor Trail -->
+    <canvas id="effect-canvas"></canvas>
+
+    <div class="absolute top-0 left-0 w-full h-full radial-glow pointer-events-none z-0"></div>
+
+    <!-- NAVIGATION -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-brandBg/80 backdrop-blur-xl border-b border-brandBorder/80 py-5 px-4 md:px-12 flex justify-between items-center select-none">
+        <a href="#home" class="text-xl md:text-2xl font-black tracking-tighter text-white uppercase group z-50">
+            captain<span class="text-brandNeon group-hover:text-brandPurple transition-colors duration-300">andrej</span>
+        </a>
+        
+        <div class="flex items-center gap-3 md:gap-6 relative z-50">
+            <!-- DISTINCTIVE TELEGRAM JOIN BUTTON -->
+            <a href="https://t.me/captainandrej" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-xs font-bold uppercase tracking-wider text-white bg-telegramBlue/10 border border-telegramBlue/40 rounded-xl hover:bg-telegramBlue hover:border-telegramBlue transition-all duration-300 shadow-[0_0_15px_rgba(34,158,217,0.15)] hover:shadow-[0_0_25px_rgba(34,158,217,0.45)] group/tg">
+                <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-telegramBlue group-hover/tg:text-white transition-colors" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .33z"/>
+                </svg>
+                <span>Join Telegram</span>
+            </a>
+
+            <!-- CONTACT DROPDOWN -->
+            <div class="relative inline-block text-left" id="contact-dropdown-wrapper">
+                <button id="contact-btn" type="button" class="cursor-pointer pointer-events-auto relative inline-flex items-center justify-center p-0.5 overflow-hidden text-[10px] md:text-xs font-bold uppercase tracking-widest text-white rounded-xl group bg-gradient-to-br from-brandNeon to-brandPurple focus:outline-none">
+                    <span class="relative px-3 py-1.5 md:px-4 md:py-2 transition-all ease-in duration-200 bg-brandBg rounded-xl group-hover:bg-opacity-0">
+                        Contact
+                    </span>
+                </button>
+                
+                <!-- DROPDOWN MENU -->
+                <div id="contact-menu" class="hidden absolute right-0 mt-3 w-48 bg-brandCard border border-brandBorder p-2 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.7)] flex-col gap-1 z-[9999]">
+                    <a href="https://github.com/captainandrej" target="_blank" class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-brandBorder transition-colors group/link">
+                        <svg class="w-5 h-5 text-gray-400 group-hover/link:text-white group-hover/link:scale-110 transition-all" viewBox="0 0 24 24" fill="currentColor">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.577.688.479C19.138 20.164 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                        </svg>
+                        <span class="text-xs font-bold text-gray-300 group-hover/link:text-white">GitHub</span>
+                    </a>
+                    
+                    <a href="https://t.me/noworriess" target="_blank" class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-brandBorder transition-colors group/link">
+                        <svg class="w-5 h-5 text-gray-400 group-hover/link:text-white group-hover/link:scale-110 transition-all" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .33z"/>
+                        </svg>
+                        <span class="text-xs font-bold text-gray-300 group-hover/link:text-white">Telegram DM</span>
+                    </a>
+                    
+                    <a href="https://discord.com/invite/captainandrej" target="_blank" class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-brandBorder transition-colors group/link">
+                        <svg class="w-5 h-5 text-gray-400 group-hover/link:text-white group-hover/link:scale-110 transition-all" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.094 13.094 0 0 1-1.873-.894.077.077 0 0 1-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 0 1 .077-.011c3.92 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.009c.12.099.246.195.373.289a.077.077 0 0 1-.006.127 12.298 12.298 0 0 1-1.873.894.077.077 0 0 1-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.156 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.156 2.418z"/>
+                        </svg>
+                        <span class="text-xs font-bold text-gray-300 group-hover/link:text-white">Discord</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-6xl mx-auto px-6 pt-40 relative z-10">
+        
+        <!-- HERO SECTION -->
+        <section id="home" class="min-h-[75vh] flex flex-col justify-center items-center text-center py-12 relative" data-aos="zoom-in" data-aos-duration="1000">
+            <!-- Enhanced Badge with Ripple Effect -->
+            <div class="inline-flex items-center gap-2.5 bg-gradient-to-r from-brandNeon/10 to-brandPurple/10 border border-brandNeon/30 text-brandNeon text-[11px] px-5 py-2 rounded-full font-mono font-bold tracking-widest uppercase mb-8 shadow-[0_0_25px_rgba(56,189,248,0.15)] backdrop-blur-md">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brandNeon opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-brandNeon"></span>
+                </span> 
+                Always online & coding
+            </div>
+            
+            <!-- Massive Headings -->
+            <h1 class="text-4xl sm:text-5xl md:text-7xl font-black text-white tracking-tight mb-6 uppercase leading-tight max-w-4xl">
+                Hello, I am <br class="sm:hidden" />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brandNeon via-cyan-400 to-brandPurple font-extrabold tracking-tighter drop-shadow-[0_0_30px_rgba(56,189,248,0.2)]">
+                    captainandrej
+                </span>
+            </h1>
+            
+            <!-- Dynamic Typewriter Text -->
+            <div class="h-8 mb-8 flex items-center justify-center">
+                <p class="text-sm md:text-base font-mono font-bold uppercase tracking-wider text-gray-400">
+                    &gt; <span id="typewriter-text" class="text-white border-r-2 border-brandNeon pr-1 animate-pulse"></span>
+                </p>
+            </div>
+            
+            <!-- Description -->
+            <p class="text-base md:text-lg text-gray-400 font-medium max-w-2xl leading-relaxed mb-12 px-4">
+                Tech enthusiast & developer transforming ideas into digital reality. I specialize in bridging chat platforms like <span class="text-white font-semibold underline decoration-brandNeon/40">Discord & Telegram</span> with intelligent AI models and precisely cloning complex web interfaces.
+            </p>
+            
+            <!-- Action Button -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center w-full px-6">
+                <a href="#projects" class="w-full sm:w-auto relative inline-flex items-center justify-center px-8 py-4 text-sm font-bold tracking-wider text-white uppercase transition-all duration-300 transform rounded-xl bg-gradient-to-r from-brandNeon to-brandPurple hover:scale-105 hover:shadow-[0_0_35px_rgba(56,189,248,0.4)] group">
+                    <span>Explore projects</span>
+                    <svg class="w-4 h-4 ml-2 transform group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7m14-6l-7 7-7-7"></path></svg>
+                </a>
+            </div>
+        </section>
+
+        <!-- ABOUT ME -->
+        <section id="about" class="py-24 border-t border-brandBorder/50">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6" data-aos="fade-right" data-aos-duration="900">
+                    <h2 class="text-3xl font-black text-white uppercase tracking-tight mb-6">
+                        <span class="text-brandNeon">//</span> What I do & What I love
+                    </h2>
+                    <p class="text-gray-400 leading-relaxed mb-6 font-medium">
+                        My learning philosophy is simple: you truly understand how something works when you break it down and build it again from scratch. That's why I enjoy taking popular websites and entirely cloning them down to the finest detail.
+                    </p>
+                    <p class="text-gray-400 leading-relaxed font-medium mb-8">
+                        At the same time, I am deeply fascinated by the world of artificial intelligence. I spend my time integrating LLM models and APIs directly into communication platforms like Discord and Telegram, building interactive bots that genuinely process and respond intelligently.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-brandCard border border-brandBorder p-4 rounded-xl">
+                            <div class="text-2xl mb-1">🤖</div>
+                            <h3 class="font-bold text-white text-sm">AI Integrations</h3>
+                        </div>
+                        <div class="bg-brandCard border border-brandBorder p-4 rounded-xl">
+                            <div class="text-2xl mb-1">🎨</div>
+                            <h3 class="font-bold text-white text-sm">Tailwind & UI</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- TECH STACK GRID -->
+                <div class="lg:col-span-6 grid grid-cols-3 gap-3 items-center" data-aos="fade-left" data-aos-duration="900">
+                    <!-- Column 1 -->
+                    <div class="space-y-3 pt-6">
+                        <div class="tech-icon-card">
+                            <svg class="w-8 h-8 text-[#e34f26]" viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 0h21l-1.9 21.2L12 24 3.4 21.2zM18.4 6.3H5.4l.4 4.7h11.7zm-1 6.5H8.7l.2 2.7 3.1.9 3.1-.9z"/></svg>
+                            <span class="text-[10px] uppercase font-mono tracking-wider text-gray-400 mt-2">HTML</span>
+                        </div>
+                        <div class="tech-icon-card">
+                            <svg class="w-8 h-8 text-[#00d8ff]" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="2"/><path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-5a10 10 0 100 20 10 10 0 000-20z"/></svg>
+                            <span class="text-[10px] uppercase font-mono tracking-wider text-gray-400 mt-2">React</span>
+                        </div>
+                        <div class="tech-icon-card">
+                            <div class="text-white font-bold text-sm bg-neutral-800 px-2 py-0.5 rounded">ex</div>
+                            <span class="text-[10px] uppercase font-mono tracking-wider text-gray-400 mt-2">Express</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Column 2 -->
+                    <div class="space-y-3">
+                        <div class="tech-icon-card">
+                            <svg class="w-8 h-8 text-[#f7df1e]" viewBox="0 0 24 24" fill="currentColor"><path d="M0 0h24v24H0z"/><path fill="#000" d="M22 17.5c0 1.9-1.2 3-3.2 3-1.6 0-2.8-.8-3.3-1.8l1.7-1c.4.6.9 1 1.5 1 .8 0 1.3-.4 1.3-1.1 0-.8-.5-1.1-1.6-1.6l-.6-.3c-1.4-.6-2.2-1.4-2.2-2.9 0-1.8 1.3-2.9 3.1-2.9 1.4 0 2.4.6 3 1.6l-1.6 1c-.3-.5-.7-.8-1.3-.8-.7 0-1.1.4-1.1.9 0 .6.4.9 1.3 1.3l.7.3c1.7.7 2.3 1.6 2.3 3.3z"/></svg>
+                            <span class="text-[10px] uppercase font-mono tracking-wider text-gray-400 mt-2">Javascript</span>
+                        </div>
+                        <div class="tech-icon-card">
+                            <svg class="w-8 h-8 text-[#1572b6]" viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 0h21l-1.9 21.2L12 24 3.4 21.2zM17.2 6.3H6.8l.2 2.5h10zm-.3 3.6H7.2l.2 2.5h9.5l-.3 3.3-2.6.7-2.6-.7-.2-1.6H8.7l.3 3.8 3 1 3-1z"/></svg>
+                            <span class="text-[10px] uppercase font-mono tracking-wider text-gray-400 mt-2">CSS</span>
+                        </div>
+                        <div class="tech-icon-card">
+                            <svg class="w-8 h-8 text-[#13aa52]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm1 14.5c0 .8-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5.7-1.5 1.5-1.5 1.5.7 1.5 1.5zm-1-4.5c-.6 0-1-.4-1-1V8c0-.6.4-1 1-1s1.4.4 1.4 1v3c0 .6-.4 1-1 1z"/></svg>
+                            <span class="text-[10px] uppercase font-mono tracking-wider text-gray-400 mt-2">MongoDB</span>
+                        </div>
+                        <div class="tech-icon-card">
+                            <svg class="w-8 h-8 text-[#f03c2e]" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 12a11.5 11.5 0 1 1-23 0 11.5 11.5 0 0 1 23 0zm-16-1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/></svg>
+                            <span class="text-[10px] uppercase font-mono tracking-wider text-gray-400 mt-2">Git</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Column 3 -->
+                    <div class="space-y-3 pt-6">
+                        <div class="tech-icon-card">
+                            <svg class="w-8 h-8 text-[#cc6699]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm3.5 11.5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z"/></svg>
+                            <span class="text-[10px] uppercase font-mono tracking-wider text-gray-400 mt-2">Sass</span>
+                        </div>
+                        <div class="tech-icon-card">
+                            <div class="text-white font-black text-sm tracking-tighter">NEXT.js</div>
+                            <span class="text-[10px] uppercase font-mono tracking-wider text-gray-400 mt-2">Next.js</span>
+                        </div>
+                        <div class="tech-icon-card">
+                            <svg class="w-8 h-8 text-[#339933]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm-1 14.5H9v-5h2v5zm0-6.5H9V8h2v2zm4 6.5h-2v-3.5c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5 1.5v3.5H8v-5h2v.7c.4-.5 1-.9 1.7-.9 1.3 0 2.3 1 2.3 2.3v2.9z"/></svg>
+                            <span class="text-[10px] uppercase font-mono tracking-wider text-gray-400 mt-2">Node.js</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects" class="py-24 border-t border-brandBorder/50">
+            <h2 class="text-4xl font-black text-white text-center uppercase tracking-tight mb-3" data-aos="fade-up">My Hobby Projects</h2>
+            <p class="text-gray-500 text-center mb-16 font-medium tracking-wide" data-aos="fade-up" data-aos-delay="100">A curated showcase of my recent work</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Project 1: changeumind -->
+                <div class="bg-brandCard border border-brandBorder rounded-3xl overflow-hidden transition-all duration-500 flex flex-col justify-between group neon-card-hover" data-aos="fade-up" data-aos-duration="800">
+                    <div>
+                        <div class="h-48 overflow-hidden relative border-b border-brandBorder">
+                            <img src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&q=80&w=800" alt="Restructuring digital brain" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-70" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-brandCard via-transparent to-transparent"></div>
+                        </div>
+                        <div class="p-8 md:p-10">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-2xl font-bold text-white group-hover:text-brandNeon transition-colors duration-300">changeumind</h3>
+                                <span class="text-[10px] uppercase font-mono tracking-widest bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3 py-1 rounded-full font-bold">
+                                    Online
+                                </span>
+                            </div>
+                            <p class="text-gray-400 text-sm leading-relaxed font-medium">
+                                A website centered around understanding the human mind. Features clean typography, a fully integrated dark mode system, and a story-driven UI tracking characters Adam and Eve.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-8 md:px-10 pb-8 pt-4 flex justify-between items-center border-t border-brandBorder/60 bg-brandBg/40">
+                        <span class="text-xs font-mono text-gray-500">HTML5 / Tailwind CSS</span>
+                        <a href="https://captainandrej.github.io/changeumind/" target="_blank" class="text-xs font-bold text-brandNeon group-hover:text-white transition-colors duration-300 flex items-center gap-1.5 bg-brandNeon/10 border border-brandNeon/20 px-3 py-2 rounded-xl hover:bg-brandNeon/20">
+                            Open Live ↗
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2: Bots -->
+                <div class="bg-brandCard border border-brandBorder rounded-3xl overflow-hidden transition-all duration-500 flex flex-col justify-between group neon-card-hover" data-aos="fade-up" data-aos-duration="800" data-aos-delay="150">
+                    <div>
+                        <div class="h-48 overflow-hidden relative border-b border-brandBorder">
+                            <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=800" alt="Chat UI with integrated AI bots" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-70" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-brandCard via-transparent to-transparent"></div>
+                        </div>
+                        <div class="p-8 md:p-10">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-2xl font-bold text-white group-hover:text-brandPurple transition-colors duration-300">Telegram & Discord Bot</h3>
+                                <span class="text-[10px] uppercase font-mono tracking-widest bg-amber-500/10 border border-amber-500/30 text-amber-500 px-3 py-1 rounded-full font-bold">
+                                    In Progress
+                                </span>
+                            </div>
+                            <p class="text-gray-400 text-sm leading-relaxed font-medium">
+                                Building smart assistants for modern communication networks. Involves sophisticated command parsing, automated notifications, and AI model workflows.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-8 md:px-10 pb-8 pt-4 flex justify-between items-center border-t border-brandBorder/60 bg-brandBg/40">
+                        <span class="text-xs font-mono text-gray-500">Node.js / Python / AI</span>
+                        <span class="text-[10px] uppercase font-mono tracking-widest bg-amber-500/10 border border-amber-500/30 text-amber-500 px-3 py-1.5 rounded-xl font-bold">
+                            Coming Soon
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="w-full py-12 border-t border-brandBorder bg-[#030305] text-center mt-20 relative z-10">
+        <h3 class="text-sm font-bold text-white tracking-wide uppercase mb-2">Created by @captainandrej</h3>
+        <p class="text-gray-600 text-[10px] font-mono">© 2026 | All rights reserved.</p>
+    </footer>
+
+    <!-- AOS Animations (JS Script) -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            once: true,
+            offset: 100,
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // CONTACT DROPDOWN LOGIC
+            const contactBtn = document.getElementById('contact-btn');
+            const contactMenu = document.getElementById('contact-menu');
+
+            if (contactBtn && contactMenu) {
+                contactBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    if (contactMenu.classList.contains('hidden')) {
+                        contactMenu.classList.remove('hidden');
+                        contactMenu.classList.add('flex');
+                    } else {
+                        contactMenu.classList.remove('flex');
+                        contactMenu.classList.add('hidden');
+                    }
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!contactMenu.contains(e.target) && e.target !== contactBtn) {
+                        contactMenu.classList.remove('flex');
+                        contactMenu.classList.add('hidden');
+                    }
+                });
+            }
+
+            // --- TYPEWRITER EFFECT FOR HERO SECTION ---
+            const words = ["Tech Enthusiast", "Full Stack Developer", "AI Integrator", "UI/UX Aficionado"];
+            let wordIndex = 0;
+            let timer;
+
+            function typingEffect() {
+                let word = words[wordIndex].split("");
+                var loopTyping = function() {
+                    if (word.length > 0) {
+                        document.getElementById('typewriter-text').innerHTML += word.shift();
+                    } else {
+                        setTimeout(deletingEffect, 2000);
+                        return false;
+                    }
+                    timer = setTimeout(loopTyping, 100);
+                };
+                loopTyping();
+            }
+
+            function deletingEffect() {
+                let word = words[wordIndex].split("");
+                var loopDeleting = function() {
+                    if (word.length > 0) {
+                        word.pop();
+                        document.getElementById('typewriter-text').innerHTML = word.join("");
+                    } else {
+                        if (words.length > (wordIndex + 1)) {
+                            wordIndex++;
+                        } else {
+                            wordIndex = 0;
+                        }
+                        setTimeout(typingEffect, 500);
+                        return false;
+                    }
+                    timer = setTimeout(loopDeleting, 60);
+                };
+                loopDeleting();
+            }
+
+            if (document.getElementById('typewriter-text')) {
+                typingEffect();
+            }
+
+            // --- EFFECT CANVAS (CODE SNOW + CURSOR TRAIL) ---
+            const canvas = document.getElementById('effect-canvas');
+            const ctx = canvas.getContext('2d');
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // 1. Falling Code Particles Setup
+            const codeSnippets = [
+                '<div>', 'const', 'useState', 'useEffect', '@mixin', 'import', 
+                'npm run', 'git commit', 'async', 'await', 'function', '=>', 
+                '#id', '.class', 'margin', 'display', 'Express()', 'mongoose', 
+                'NextPage', '<Component />', 'respond()', 'bot.on()', 'ctx.reply()'
+            ];
+            
+            const colors = ['rgba(56, 189, 248, 0.15)', 'rgba(168, 85, 247, 0.15)', 'rgba(255, 255, 255, 0.1)'];
+            let snowflakes = [];
+            const maxSnowflakes = 45; 
+
+            class Snowflake {
+                constructor() {
+                    this.reset();
+                    this.y = Math.random() * canvas.height;
+                }
+
+                reset() {
+                    this.text = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+                    this.x = Math.random() * canvas.width;
+                    this.y = -20;
+                    this.size = Math.random() * 6 + 10; 
+                    this.speed = Math.random() * 0.5 + 0.3; 
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.opacity = Math.random() * 0.5 + 0.3;
+                    this.swing = Math.random() * 0.02; 
+                    this.swingStep = Math.random() * 100;
+                }
+
+                update() {
+                    this.y += this.speed;
+                    this.swingStep += this.swing;
+                    this.x += Math.sin(this.swingStep) * 0.3;
+
+                    if (this.y > canvas.height + 20 || this.x < -50 || this.x > canvas.width + 50) {
+                        this.reset();
+                    }
+                }
+
+                draw() {
+                    ctx.save();
+                    ctx.fillStyle = this.color;
+                    ctx.font = `bold ${this.size}px monospace`;
+                    ctx.fillText(this.text, this.x, this.y);
+                    ctx.restore();
+                }
+            }
+
+            for(let i = 0; i < maxSnowflakes; i++) {
+                snowflakes.push(new Snowflake());
+            }
+
+            // 2. Cursor Trail Setup
+            let points = [];
+            const maxPoints = 20; 
+
+            if (window.innerWidth > 768) {
+                window.addEventListener('mousemove', (e) => {
+                    points.push({ x: e.clientX, y: e.clientY });
+                    if (points.length > maxPoints) {
+                        points.shift();
+                    }
+                });
+            }
+
+            // --- ANIMATION LOOP ---
+            function render() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // A. Draw Falling Code
+                snowflakes.forEach(flake => {
+                    flake.update();
+                    flake.draw();
+                });
+
+                // B. Draw Interactive Trail
+                if (points.length > 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(points[0].x, points[0].y);
+
+                    for (let i = 1; i < points.length - 1; i++) {
+                        const xc = (points[i].x + points[i + 1].x) / 2;
+                        const yc = (points[i].y + points[i + 1].y) / 2;
+                        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+                    }
+
+                    ctx.strokeStyle = '#38bdf8'; 
+                    ctx.lineWidth = 2.5;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = '#38bdf8';
+                    ctx.stroke();
+                    ctx.shadowBlur = 0; 
+                }
+
+                if (points.length > 0) {
+                    points.shift();
+                }
+
+                requestAnimationFrame(render);
+            }
+
+            render();
+        });
+    </script>
+</body>
+</html>
